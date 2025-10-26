@@ -21,8 +21,8 @@ const Patient_Step6_Summary: React.FC<PatientStep6SummaryProps> = ({ data, onRes
 
   const generateSummaryText = () => {
     return `
-RESUMEN DE MI VIAJE: LA PREGUNTA DEL MILAGRO
-============================================
+RESUMEN: LA PREGUNTA DEL MILAGRO
+=================================
 
 EL PROBLEMA EN EL QUE ME ENFOQUÉ:
 ${data.problem}
@@ -57,7 +57,7 @@ MI PROGRESO Y PRÓXIMO PASO:
         <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
-        <h2 className="text-3xl font-bold text-slate-800 mt-4">Resumen de Tu Viaje</h2>
+        <h2 className="text-3xl font-bold text-slate-800 mt-4">Resumen</h2>
         <p className="text-slate-600 mt-2">¡Felicidades por completar este ejercicio! Aquí tienes un resumen de tus reflexiones. Guárdalo para recordarte tus fortalezas y tu camino a seguir.</p>
       </div>
 

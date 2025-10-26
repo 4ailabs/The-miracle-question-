@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { SessionData } from './types';
 import Step0_Welcome from './components/Step0_Welcome';
+import Button from './components/common/Button';
 
 // Therapist components
 import Step1_Setup from './components/Step1_Setup';
@@ -62,6 +63,43 @@ function App() {
   const [view, setView] = useState<View>('guide');
   const [mode, setMode] = useState<Mode | null>(null);
 
+  // Cargar estado guardado del localStorage al iniciar
+  useEffect(() => {
+    try {
+      const savedData = localStorage.getItem('miracle-question-data');
+      const savedStep = localStorage.getItem('miracle-question-step');
+      const savedMode = localStorage.getItem('miracle-question-mode');
+      const savedView = localStorage.getItem('miracle-question-view');
+
+      if (savedData && savedStep) {
+        const parsedData = JSON.parse(savedData);
+        setSessionData(parsedData);
+        setCurrentStep(parseInt(savedStep));
+        if (savedMode) setMode(savedMode as Mode);
+        if (savedView) setView(savedView as View);
+      }
+    } catch (error) {
+      console.error('Error loading from localStorage:', error);
+      // Limpiar localStorage corrupto
+      localStorage.removeItem('miracle-question-data');
+      localStorage.removeItem('miracle-question-step');
+      localStorage.removeItem('miracle-question-mode');
+      localStorage.removeItem('miracle-question-view');
+    }
+  }, []);
+
+  // Guardar estado en localStorage cada vez que cambie
+  useEffect(() => {
+    try {
+      localStorage.setItem('miracle-question-data', JSON.stringify(sessionData));
+      localStorage.setItem('miracle-question-step', currentStep.toString());
+      if (mode) localStorage.setItem('miracle-question-mode', mode);
+      if (view) localStorage.setItem('miracle-question-view', view);
+    } catch (error) {
+      console.error('Error saving to localStorage:', error);
+    }
+  }, [sessionData, currentStep, mode, view]);
+
   const handleNext = (data: Partial<SessionData> = {}) => {
     setSessionData(prev => ({ ...prev, ...data }));
     if (currentStep < TOTAL_STEPS - 1) {
@@ -88,7 +126,19 @@ function App() {
     setSessionData(initialData);
     setMode(null);
     setCurrentStep(0);
+    setView('guide');
+    // Limpiar localStorage
+    localStorage.removeItem('miracle-question-data');
+    localStorage.removeItem('miracle-question-step');
+    localStorage.removeItem('miracle-question-mode');
+    localStorage.removeItem('miracle-question-view');
     window.scrollTo(0, 0);
+  };
+
+  const handleGoHome = () => {
+    if (confirm('¿Estás seguro de que quieres volver al inicio? Se perderá el progreso actual.')) {
+      handleRestart();
+    }
   };
 
   const renderTherapistStep = () => {
@@ -165,7 +215,7 @@ function App() {
     return (
       <button 
         onClick={() => setView(targetView)} 
-        className={`w-1/2 py-2 px-4 text-sm font-semibold rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-200 ${isActive ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-600 hover:bg-slate-300'}`}
+        className={`w-1/2 py-3 px-5 text-sm font-semibold rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-1 ${isActive ? 'bg-gradient-to-r from-slate-600 to-slate-700 text-white shadow-lg transform scale-105' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}
       >
         {children}
       </button>
@@ -173,21 +223,24 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 font-sans">
-      <header className="w-full max-w-5xl mb-6">
+    <div className="min-h-screen flex flex-col items-center py-3 sm:py-4 lg:py-6 px-3 sm:px-4 font-sans bg-gradient-to-br from-slate-50 via-slate-50/95 to-slate-100/95">
+      <header className="w-full max-w-5xl mb-3 sm:mb-4 lg:mb-6">
+          {/* Botón Volver al Inicio */}
+          {currentStep > 0 && (
+            <div className="mb-3 flex justify-start">
+              <Button onClick={handleGoHome} variant="secondary" className="text-xs py-2 px-3">
+                Volver al Inicio
+              </Button>
+            </div>
+          )}
           {mode === 'therapist' && (
-            <div className="flex justify-center bg-slate-200 p-1 rounded-lg max-w-sm mx-auto">
+            <div className="flex justify-center bg-white/80 backdrop-blur-sm p-1 rounded-xl max-w-md mx-auto shadow-md border border-slate-200/50">
               <TabButton currentView={view} targetView='guide' setView={setView}>Guía de Sesión</TabButton>
               <TabButton currentView={view} targetView='recommendations' setView={setView}>Recursos Clínicos</TabButton>
             </div>
           )}
-          {mode === 'patient' && (
-            <div className="text-center">
-              <h1 className="text-2xl font-bold text-slate-700">Tu Viaje Personal</h1>
-            </div>
-          )}
       </header>
-      <main className="w-full max-w-5xl">
+      <main className="w-full max-w-4xl flex-1">
         {view === 'guide' || mode === 'patient' ? (
           <>
             {currentStep > 0 && currentStep < TOTAL_STEPS - 1 && (
@@ -203,9 +256,9 @@ function App() {
           <Recommendations />
         )}
       </main>
-      <footer className="text-center mt-8 text-slate-500 text-sm">
-        <p>Basado en la Terapia Breve Centrada en Soluciones de Steve de Shazer & Insoo Kim Berg.</p>
-        <p>Esta es una herramienta de apoyo y no reemplaza el juicio clínico profesional.</p>
+      <footer className="text-center mt-6 text-slate-500 text-sm max-w-3xl mx-auto py-2">
+        <p className="font-medium mb-1">Basado en la Terapia Breve Centrada en Soluciones de Steve de Shazer & Insoo Kim Berg.</p>
+        <p className="text-xs">Esta es una herramienta de apoyo y no reemplaza el juicio clínico profesional.</p>
       </footer>
     </div>
   );

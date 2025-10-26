@@ -11,6 +11,8 @@ interface PatientStep5ScaleProps {
 const Patient_Step5_Scale: React.FC<PatientStep5ScaleProps> = ({ initialData, onNext, onBack }) => {
   const [progressScale, setProgressScale] = useState<number>(initialData.progressScale || 3);
   const [halfPointStepNotes, setHalfPointStepNotes] = useState(initialData.halfPointStepNotes);
+  const [whyNotZero, setWhyNotZero] = useState('');
+  const [whatKeepsMe, setWhatKeepsMe] = useState('');
 
   const handleNext = () => {
     onNext({ progressScale, halfPointStepNotes });
@@ -58,19 +60,42 @@ const Patient_Step5_Scale: React.FC<PatientStep5ScaleProps> = ({ initialData, on
                 </div>
                 <div className="text-center text-5xl font-bold text-blue-600 mt-4">{progressScale}</div>
             </div>
-             <div>
-                <label htmlFor="halfpoint" className="block text-lg font-semibold text-slate-700 mb-2">
-                    Mi Próximo Medio Punto
+            <div>
+                <label className="block text-lg font-semibold text-slate-700 mb-2">
+                    ¿Qué te dice el hecho de estar en {progressScale} y no en 0?
                 </label>
-                <p className="text-sm text-slate-500 mb-3">Describe esa pequeña acción que te llevaría a un {progressScale + 0.5}.</p>
+                <textarea
+                    value={whyNotZero}
+                    onChange={(e) => setWhyNotZero(e.target.value)}
+                    placeholder="Esto te muestra que algo ya estás haciendo bien..."
+                    className="w-full p-3 border-2 border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition mb-4"
+                    rows={3}
+                />
+            </div>
+            <div>
+                <label className="block text-lg font-semibold text-slate-700 mb-2">
+                    ¿Qué estás haciendo que te mantiene en ese número?
+                </label>
+                <textarea
+                    value={whatKeepsMe}
+                    onChange={(e) => setWhatKeepsMe(e.target.value)}
+                    placeholder="Identifica tus fortalezas y recursos actuales..."
+                    className="w-full p-3 border-2 border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition mb-4"
+                    rows={3}
+                />
+            </div>
+            <div>
+                <label htmlFor="halfpoint" className="block text-lg font-semibold text-slate-700 mb-2">
+                    Mi Próximo Medio Punto (a {progressScale + 0.5})
+                </label>
+                <p className="text-sm text-slate-500 mb-3">Describe esa pequeña acción concreta que te llevaría a un {progressScale + 0.5}.</p>
                 <textarea
                     id="halfpoint"
                     value={halfPointStepNotes}
                     onChange={(e) => setHalfPointStepNotes(e.target.value)}
                     placeholder="Ej: Salir a caminar 10 minutos, hacer esa llamada pendiente, dedicar 5 minutos a..."
-                    className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                    rows={5}
-                    aria-label="Mi Próximo Medio Punto"
+                    className="w-full p-3 border-2 border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                    rows={4}
                 />
             </div>
         </div>

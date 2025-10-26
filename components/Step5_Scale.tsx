@@ -10,8 +10,8 @@ interface Step5ScaleProps {
 
 const GuidanceItem: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
     <div>
-        <h4 className="font-semibold text-slate-800 mb-2 text-base">{title}</h4>
-        <div className="text-sm text-slate-600 space-y-2 bg-slate-50 p-3 rounded-md border-l-4 border-slate-300">{children}</div>
+        <h4 className="font-semibold text-slate-800 mb-1 text-sm">{title}</h4>
+        <div className="text-sm text-slate-600 space-y-1 bg-slate-50 p-2.5 rounded-md border-l-4 border-slate-300">{children}</div>
     </div>
 );
 
@@ -24,12 +24,12 @@ const Step5_Scale: React.FC<Step5ScaleProps> = ({ initialData, onNext, onBack })
   };
 
   return (
-    <Card className="max-w-4xl mx-auto animate-fade-in">
-       <div className="grid md:grid-cols-2 gap-8">
+    <Card className="max-w-6xl mx-auto animate-fade-in">
+       <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-4">
         {/* Left Column: Guidance */}
-        <div>
-          <h2 className="text-2xl font-bold text-slate-800 mb-6">Fase 5: Escala de Progreso</h2>
-          <div className="space-y-6">
+        <div className="order-2 lg:order-1">
+          <h2 className="text-lg lg:text-xl font-bold text-slate-800 mb-2 lg:mb-3">Fase 5: Escala de Progreso</h2>
+          <div className="space-y-3 lg:space-y-4">
             <GuidanceItem title="Objetivo">
               <p>Crear una medida concreta y compartida del progreso, establecer una línea base y generar esperanza al constatar que raramente alguien está en 0.</p>
             </GuidanceItem>
@@ -41,19 +41,19 @@ const Step5_Scale: React.FC<Step5ScaleProps> = ({ initialData, onNext, onBack })
               </ol>
             </GuidanceItem>
             <GuidanceItem title="Pregunta de Seguimiento CRUCIAL">
-              <p className="font-semibold text-base text-blue-700">"¿Qué necesitaría pasar para que usted suba MEDIO PUNTO en esta escala?"</p>
+              <p className="font-semibold text-slate-700">"¿Qué necesitaría pasar para que usted suba MEDIO PUNTO en esta escala?"</p>
               <p className="italic text-xs">Aclaración: "No un punto completo; medio punto es alcanzable y concreto."</p>
             </GuidanceItem>
           </div>
         </div>
         {/* Right Column: Notes & Scale */}
-        <div className="space-y-8">
+        <div className="order-1 lg:order-2 space-y-4">
             <div>
-                <label htmlFor="scale" className="block text-lg font-semibold text-slate-700 mb-2">
+                <label htmlFor="scale" className="block text-sm lg:text-base font-semibold text-slate-700 mb-1">
                     Posición Actual del Cliente
                 </label>
-                <div className="flex items-center space-x-4">
-                    <span className="text-lg font-bold text-slate-500">0</span>
+                <div className="flex items-center space-x-3">
+                    <span className="text-sm font-bold text-slate-500">0</span>
                     <input
                     id="scale"
                     type="range"
@@ -65,21 +65,21 @@ const Step5_Scale: React.FC<Step5ScaleProps> = ({ initialData, onNext, onBack })
                     className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer"
                     aria-label="Escala de Progreso"
                     />
-                    <span className="text-lg font-bold text-slate-500">10</span>
+                    <span className="text-sm font-bold text-slate-500">10</span>
                 </div>
-                <div className="text-center text-5xl font-bold text-blue-600 mt-4">{progressScale}</div>
+                <div className="text-center text-4xl font-bold text-slate-600 mt-3">{progressScale}</div>
             </div>
              <div>
-                <label htmlFor="halfpoint" className="block text-lg font-semibold text-slate-700 mb-2">
+                <label htmlFor="halfpoint" className="block text-sm lg:text-base font-semibold text-slate-700 mb-1">
                     Notas: Próximo Medio Punto
                 </label>
-                <p className="text-sm text-slate-500 mb-3">Anota la acción más pequeña y concreta que el cliente identifica para subir a un {progressScale + 0.5}.</p>
+                <p className="text-xs text-slate-500 mb-2">Anota la acción más pequeña y concreta que el cliente identifica para subir a un {progressScale + 0.5}.</p>
                 <textarea
                     id="halfpoint"
                     value={halfPointStepNotes}
                     onChange={(e) => setHalfPointStepNotes(e.target.value)}
                     placeholder="Ej: Salir a caminar 10 minutos, hacer esa llamada pendiente..."
-                    className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                    className="w-full p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-400 focus:border-slate-400 transition text-sm"
                     rows={5}
                     aria-label="Notas del Próximo Medio Punto"
                 />
@@ -87,9 +87,9 @@ const Step5_Scale: React.FC<Step5ScaleProps> = ({ initialData, onNext, onBack })
         </div>
       </div>
 
-      <div className="mt-8 flex justify-between items-center">
-        <Button onClick={onBack} variant="secondary">Atrás</Button>
-        <Button onClick={handleNext} disabled={halfPointStepNotes.trim().length < 5}>
+      <div className="mt-3 lg:mt-4 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-2 sm:gap-0">
+        <Button onClick={onBack} variant="secondary" className="px-4 py-2.5 text-sm w-full sm:w-auto">Atrás</Button>
+        <Button onClick={handleNext} disabled={halfPointStepNotes.trim().length < 5} className="px-4 py-2.5 text-sm w-full sm:w-auto">
           Finalizar y Ver Resumen
         </Button>
       </div>

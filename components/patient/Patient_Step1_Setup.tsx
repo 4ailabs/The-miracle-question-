@@ -32,9 +32,9 @@ const Patient_Step1_Setup: React.FC<PatientStep1SetupProps> = ({ problem, onNext
   const finalScript = scriptParts[4].replace("ese problema que te trajo aquí", `el problema de '${problem}'`);
 
   return (
-    <Card className="max-w-3xl mx-auto animate-fade-in text-center">
-       <h2 className="text-2xl font-bold text-slate-800 mb-6">Paso 1: La Invitación a Imaginar</h2>
-        <div className="space-y-6 text-xl text-slate-700 min-h-[350px] bg-slate-50 p-8 rounded-lg flex flex-col justify-center shadow-inner">
+    <Card className="max-w-4xl mx-auto animate-fade-in text-center">
+       <h2 className="text-xl font-bold text-slate-800 mb-3">Paso 1: La Invitación a Imaginar</h2>
+        <div className="space-y-3 text-base text-slate-700 min-h-[220px] bg-slate-50 p-5 rounded-lg flex flex-col justify-center shadow-inner">
             {scriptParts.map((part, index) => (
             <p
                 key={index}
@@ -44,12 +44,12 @@ const Patient_Step1_Setup: React.FC<PatientStep1SetupProps> = ({ problem, onNext
             </p>
             ))}
         </div>
-        <div className="mt-6 p-4 bg-blue-50 border-l-4 border-blue-400 rounded-r-lg text-left">
-            <p className="text-sm text-blue-700">Respira hondo. No hay necesidad de pensar en CÓMO sucedió el milagro. Simplemente, permítete entrar en este espacio de imaginación.</p>
+        <div className="mt-3 p-3 bg-slate-50 border-l-4 border-slate-400 rounded-r-lg text-left">
+            <p className="text-xs text-slate-600">Respira hondo. No hay necesidad de pensar en CÓMO sucedió el milagro. Simplemente, permítete entrar en este espacio de imaginación.</p>
         </div>
       
-      <div className="mt-8">
-        <Button onClick={onNext} disabled={visibleIndex < scriptParts.length}>
+      <div className="mt-4">
+        <Button onClick={onNext} disabled={visibleIndex < scriptParts.length} className="px-5 py-2 text-sm">
           Estoy listo/a para continuar
         </Button>
       </div>
