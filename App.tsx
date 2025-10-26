@@ -91,7 +91,16 @@ function App() {
   // Guardar estado en localStorage cada vez que cambie
   useEffect(() => {
     try {
-      localStorage.setItem('miracle-question-data', JSON.stringify(sessionData));
+      // Solo guardar los datos serializables
+      const dataToSave = {
+        problem: sessionData.problem,
+        personalDiscoveryNotes: sessionData.personalDiscoveryNotes,
+        relationalDiscoveryNotes: sessionData.relationalDiscoveryNotes,
+        exceptionNotes: sessionData.exceptionNotes,
+        progressScale: sessionData.progressScale,
+        halfPointStepNotes: sessionData.halfPointStepNotes
+      };
+      localStorage.setItem('miracle-question-data', JSON.stringify(dataToSave));
       localStorage.setItem('miracle-question-step', currentStep.toString());
       if (mode) localStorage.setItem('miracle-question-mode', mode);
       if (view) localStorage.setItem('miracle-question-view', view);
