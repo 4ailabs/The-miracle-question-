@@ -244,9 +244,10 @@ function App() {
             </div>
           )}
           {mode === 'therapist' && (
-            <div className="flex justify-center bg-white/80 backdrop-blur-sm p-1 rounded-xl max-w-md mx-auto shadow-md border border-slate-200/50">
+            <div className="flex justify-center bg-white/80 backdrop-blur-sm p-1 rounded-xl max-w-2xl mx-auto shadow-md border border-slate-200/50">
               <TabButton currentView={view} targetView='guide' setView={setView}>Guía de Sesión</TabButton>
-              <TabButton currentView={view} targetView='recommendations' setView={setView}>Recursos Clínicos</TabButton>
+              <TabButton currentView={view} targetView='manual' setView={setView}>Manual</TabButton>
+              <TabButton currentView={view} targetView='recommendations' setView={setView}>Recursos</TabButton>
             </div>
           )}
       </header>
