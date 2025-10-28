@@ -17,7 +17,7 @@ const SummaryItem: React.FC<{ title: string; children: React.ReactNode }> = ({ t
 
 
 const Patient_Step6_Summary: React.FC<PatientStep6SummaryProps> = ({ data, onRestart }) => {
-  const [copyStatus, setCopyStatus] = useState('Copiar Mi Resumen');
+  const [copyStatus, setCopyStatus] = useState('Copiar al Portapapeles');
 
   const generateSummaryText = () => {
     return `
@@ -45,10 +45,44 @@ MI PROGRESO Y PRÓXIMO PASO:
   const handleCopy = () => {
     navigator.clipboard.writeText(generateSummaryText()).then(() => {
       setCopyStatus('¡Copiado!');
-      setTimeout(() => setCopyStatus('Copiar Mi Resumen'), 2000);
+      setTimeout(() => setCopyStatus('Copiar al Portapapeles'), 2000);
     }, () => {
       setCopyStatus('Error al copiar');
     });
+  };
+
+  const handleDownloadTxt = () => {
+    const content = generateSummaryText();
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'mi-pregunta-del-milagro.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleDownloadJson = () => {
+    const content = {
+      problema: data.problem,
+      diaMilagroso: data.personalDiscoveryNotes,
+      perspectivaDemas: data.relationalDiscoveryNotes,
+      excepciones: data.exceptionNotes,
+      progreso: data.progressScale,
+      proximoPaso: data.halfPointStepNotes,
+      fecha: new Date().toISOString()
+    };
+    const blob = new Blob([JSON.stringify(content, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'mi-pregunta-del-milagro.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -85,13 +119,26 @@ MI PROGRESO Y PRÓXIMO PASO:
           <p className="font-semibold italic text-amber-900 mt-2 text-center text-lg">El progreso, no la perfección, es la meta.</p>
       </div>
 
-      <div className="mt-10 flex justify-center items-center flex-wrap gap-4">
-        <Button onClick={handleCopy}>
-          {copyStatus}
-        </Button>
-        <Button onClick={onRestart} variant="secondary">
-          Iniciar Nueva Reflexión
-        </Button>
+      <div className="mt-8 space-y-4">
+        <div className="bg-slate-50 p-4 rounded-lg">
+          <h3 className="text-sm font-semibold text-slate-700 mb-3 text-center">Exportar Mi Resumen</h3>
+          <div className="flex flex-col sm:flex-row gap-2 justify-center">
+            <Button onClick={handleDownloadTxt} variant="secondary" className="px-4 py-2.5 text-sm w-full sm:w-auto">
+              📄 Descargar como TXT
+            </Button>
+            <Button onClick={handleDownloadJson} variant="secondary" className="px-4 py-2.5 text-sm w-full sm:w-auto">
+              📋 Descargar como JSON
+            </Button>
+            <Button onClick={handleCopy} className="px-4 py-2.5 text-sm w-full sm:w-auto">
+              {copyStatus}
+            </Button>
+          </div>
+        </div>
+        <div className="flex justify-center">
+          <Button onClick={onRestart} variant="secondary" className="px-6 py-3 text-base">
+            Iniciar Nueva Reflexión
+          </Button>
+        </div>
       </div>
     </Card>
   );

@@ -17,7 +17,7 @@ const SummaryItem: React.FC<{ title: string; children: React.ReactNode }> = ({ t
 
 
 const Step6_Summary: React.FC<Step6SummaryProps> = ({ data, onRestart }) => {
-  const [copyStatus, setCopyStatus] = useState('Copiar Resumen');
+  const [copyStatus, setCopyStatus] = useState('Copiar al Portapapeles');
 
   const generateSummaryText = () => {
     return `
@@ -45,10 +45,44 @@ FASE 5: ESCALA DE PROGRESO
   const handleCopy = () => {
     navigator.clipboard.writeText(generateSummaryText()).then(() => {
       setCopyStatus('¡Copiado!');
-      setTimeout(() => setCopyStatus('Copiar Resumen'), 2000);
+      setTimeout(() => setCopyStatus('Copiar al Portapapeles'), 2000);
     }, () => {
       setCopyStatus('Error al copiar');
     });
+  };
+
+  const handleDownloadTxt = () => {
+    const content = generateSummaryText();
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `resumen-sesion-${new Date().toISOString().split('T')[0]}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleDownloadJson = () => {
+    const content = {
+      problema: data.problem,
+      descubrimientoPersonal: data.personalDiscoveryNotes,
+      descubrimientoRelacional: data.relationalDiscoveryNotes,
+      excepciones: data.exceptionNotes,
+      progreso: data.progressScale,
+      proximoMedioPunto: data.halfPointStepNotes,
+      fecha: new Date().toISOString()
+    };
+    const blob = new Blob([JSON.stringify(content, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `resumen-sesion-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -86,13 +120,26 @@ FASE 5: ESCALA DE PROGRESO
           <p className="text-amber-700 mt-1 text-xs">Esto presupone la mejora, orienta la atención a lo que funciona y refuerza el enfoque en soluciones.</p>
       </div>
 
-      <div className="mt-10 flex justify-center items-center flex-wrap gap-4">
-        <Button onClick={handleCopy}>
-          {copyStatus}
-        </Button>
-        <Button onClick={onRestart} variant="secondary">
-          Iniciar Nueva Sesión
-        </Button>
+      <div className="mt-8 space-y-4">
+        <div className="bg-slate-50 p-4 rounded-lg">
+          <h3 className="text-sm font-semibold text-slate-700 mb-3 text-center">Exportar Resumen de Sesión</h3>
+          <div className="flex flex-col sm:flex-row gap-2 justify-center">
+            <Button onClick={handleDownloadTxt} variant="secondary" className="px-4 py-2.5 text-sm w-full sm:w-auto">
+              📄 Descargar como TXT
+            </Button>
+            <Button onClick={handleDownloadJson} variant="secondary" className="px-4 py-2.5 text-sm w-full sm:w-auto">
+              📋 Descargar como JSON
+            </Button>
+            <Button onClick={handleCopy} className="px-4 py-2.5 text-sm w-full sm:w-auto">
+              {copyStatus}
+            </Button>
+          </div>
+        </div>
+        <div className="flex justify-center">
+          <Button onClick={onRestart} variant="secondary" className="px-6 py-3 text-base">
+            Iniciar Nueva Sesión
+          </Button>
+        </div>
       </div>
     </Card>
   );
