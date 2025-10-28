@@ -9,53 +9,91 @@ interface PatientStep3RelationalProps {
 }
 
 const Patient_Step3_Relational: React.FC<PatientStep3RelationalProps> = ({ initialData, onNext, onBack }) => {
-  const [notes, setNotes] = useState(initialData);
+  const [friend, setFriend] = useState('');
+  const [family, setFamily] = useState('');
+  const [work, setWork] = useState('');
+  const [others, setOthers] = useState('');
 
   const handleNext = () => {
-    onNext(notes);
+    const combinedNotes = `
+Tu mejor amigo/a notaría:
+${friend}
+
+Tu familia notaría:
+${family}
+
+Tus compañeros de trabajo/escuela notarían:
+${work}
+
+Otras personas importantes notarían:
+${others}
+    `.trim();
+    onNext(combinedNotes);
   };
 
   return (
-    <Card className="max-w-4xl mx-auto animate-fade-in">
-        <div className="text-center">
-            <h2 className="text-2xl font-bold text-slate-800 mb-2">Paso 3: Quién lo Notaría</h2>
-            <p className="text-lg text-slate-600 mb-6">El cambio en ti también se refleja en cómo interactúas con los demás.</p>
+    <Card className="max-w-6xl mx-auto animate-fade-in">
+       <div className="text-center mb-4">
+            <h2 className="text-xl lg:text-2xl font-bold text-slate-800 mb-2">Paso 3: ¿Cómo Te Verían los Demás?</h2>
+            <p className="text-sm lg:text-base text-slate-600">Sin que les digas nada, ¿qué notarían diferente en ti?</p>
         </div>
-      <div className="grid md:grid-cols-2 gap-8">
-        {/* Left Column: Guidance */}
-        <div className="bg-slate-50 p-6 rounded-lg">
-          <h3 className="text-xl font-bold text-blue-800 mb-4">La Pregunta Clave</h3>
-          <p className="font-semibold text-lg text-slate-700">"Sin que digas una palabra, ¿quién sería la primera persona en notar que el milagro ha ocurrido? ¿Qué verían diferente en ti?"</p>
-           <div className="mt-6 space-y-4 text-sm text-slate-600">
-            <p><strong>Piensa en:</strong></p>
-            <ul className="list-disc list-outside space-y-2 pl-5">
-              <li>Tu pareja, un familiar, tu mejor amigo/a, un compañero/a de trabajo...</li>
-              <li><strong>Conductas observables:</strong> ¿Tu tono de voz? ¿Tu sonrisa? ¿Tu postura?</li>
-              <li><strong>Interacciones:</strong> ¿Cómo sería una conversación con ellos? ¿De qué hablarían? ¿Cómo responderías de forma diferente?</li>
-            </ul>
-          </div>
-        </div>
-        {/* Right Column: Notes */}
+      <div className="space-y-4">
         <div>
-          <label htmlFor="notes" className="block text-lg font-semibold text-slate-700 mb-2">
-            Mis Reflexiones: El Mundo me ve Diferente
+          <label className="block text-sm font-semibold text-slate-700 mb-1">
+            Tu mejor amigo/a notaría:
           </label>
-          <p className="text-sm text-slate-500 mb-3">Describe qué notarían los demás y cómo cambiarían tus interacciones.</p>
           <textarea
-            id="notes"
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            placeholder="Creo que [nombre de la persona] notaría que yo..."
-            className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-            rows={15}
-            aria-label="Mis Reflexiones: El Mundo me ve Diferente"
+            value={friend}
+            onChange={(e) => setFriend(e.target.value)}
+            placeholder="¿Qué verían diferente? ¿Tu tono de voz? ¿Tu sonrisa? ¿Tu postura?"
+            className="w-full p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-400 focus:border-slate-400 transition text-sm"
+            rows={2}
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold text-slate-700 mb-1">
+            Tu familia notaría:
+          </label>
+          <textarea
+            value={family}
+            onChange={(e) => setFamily(e.target.value)}
+            placeholder="¿Qué notarían tus familiares en ti? ¿Cómo interactuarías diferente?"
+            className="w-full p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-400 focus:border-slate-400 transition text-sm"
+            rows={2}
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold text-slate-700 mb-1">
+            Tus compañeros de trabajo/escuela notarían:
+          </label>
+          <textarea
+            value={work}
+            onChange={(e) => setWork(e.target.value)}
+            placeholder="¿Qué verían en tu forma de trabajar, comunicarte, o participar?"
+            className="w-full p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-400 focus:border-slate-400 transition text-sm"
+            rows={2}
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-semibold text-slate-700 mb-1">
+            Otras personas importantes notarían:
+          </label>
+          <textarea
+            value={others}
+            onChange={(e) => setOthers(e.target.value)}
+            placeholder="¿Hay alguien más que notaría el cambio en ti?"
+            className="w-full p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-400 focus:border-slate-400 transition text-sm"
+            rows={2}
           />
         </div>
       </div>
       
-      <div className="mt-8 flex justify-between items-center">
-        <Button onClick={onBack} variant="secondary">Atrás</Button>
-        <Button onClick={handleNext} disabled={notes.trim().length < 10}>
+      <div className="mt-4 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-2 sm:gap-0">
+        <Button onClick={onBack} variant="secondary" className="px-4 py-2.5 text-sm w-full sm:w-auto">Atrás</Button>
+        <Button onClick={handleNext} disabled={!friend || !family || !work} className="px-4 py-2.5 text-sm w-full sm:w-auto">
           Siguiente
         </Button>
       </div>
