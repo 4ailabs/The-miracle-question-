@@ -22,6 +22,7 @@ import Patient_Step6_Summary from './components/patient/Patient_Step6_Summary';
 
 import ProgressBar from './components/ProgressBar';
 import Recommendations from './components/Recommendations';
+import ProfessionalManual from './components/ProfessionalManual';
 
 const TOTAL_STEPS = 7;
 const THERAPIST_STEP_NAMES = [
@@ -54,7 +55,7 @@ const initialData: SessionData = {
   halfPointStepNotes: '',
 };
 
-type View = 'guide' | 'recommendations';
+type View = 'guide' | 'recommendations' | 'manual';
 type Mode = 'therapist' | 'patient';
 
 function App() {
@@ -224,7 +225,7 @@ function App() {
     return (
       <button 
         onClick={() => setView(targetView)} 
-        className={`w-1/2 py-3 px-5 text-sm font-semibold rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-1 ${isActive ? 'bg-gradient-to-r from-slate-600 to-slate-700 text-white shadow-lg transform scale-105' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}
+        className={`w-1/3 py-3 px-4 text-xs font-semibold rounded-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-1 ${isActive ? 'bg-gradient-to-r from-slate-600 to-slate-700 text-white shadow-lg transform scale-105' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'}`}
       >
         {children}
       </button>
@@ -261,6 +262,8 @@ function App() {
             )}
             {renderStep()}
           </>
+        ) : view === 'manual' ? (
+          <ProfessionalManual />
         ) : (
           <Recommendations />
         )}
