@@ -47,6 +47,26 @@ Si el servidor de desarrollo está corriendo, deténlo y vuelve a iniciarlo:
 npm run dev
 ```
 
+### 6. Configurar variables de entorno en Vercel (para producción)
+
+Cuando despliegues en Vercel, necesitas configurar las mismas variables de entorno:
+
+1. Ve a tu proyecto en [Vercel](https://vercel.com)
+2. Navega a **Settings** > **Environment Variables**
+3. Agrega las siguientes variables:
+   - **Name**: `VITE_SUPABASE_URL`
+   - **Value**: Tu Project URL de Supabase (ej: `https://xxxxx.supabase.co`)
+   - **Environment**: Selecciona `Production`, `Preview`, y `Development`
+   
+   - **Name**: `VITE_SUPABASE_ANON_KEY`
+   - **Value**: Tu anon public key de Supabase
+   - **Environment**: Selecciona `Production`, `Preview`, y `Development`
+
+4. Haz clic en **Save** para cada variable
+5. Vuelve a desplegar tu aplicación (Vercel lo hará automáticamente o puedes hacerlo manualmente desde el dashboard)
+
+**Importante**: Las variables que empiezan con `VITE_` son expuestas al cliente (navegador), por lo que es seguro usar la `anon key` pública. Nunca uses la `service_role key` en el cliente.
+
 ## Funcionalidades
 
 Una vez configurado, podrás:
