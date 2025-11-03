@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import type { SessionData } from './types';
+import type { SessionData, SavedSession } from './types';
 import Step0_Welcome from './components/Step0_Welcome';
 import Button from './components/common/Button';
+import SaveSessionDialog from './components/SaveSessionDialog';
+import SavedSessionsList from './components/SavedSessionsList';
+import { sessionService } from './lib/sessionService';
 
 // Therapist components
 import Step1_Setup from './components/Step1_Setup';
@@ -63,6 +66,9 @@ function App() {
   const [sessionData, setSessionData] = useState<SessionData>(initialData);
   const [view, setView] = useState<View>('guide');
   const [mode, setMode] = useState<Mode | null>(null);
+  const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const [showSessionsList, setShowSessionsList] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   // Cargar estado guardado del localStorage al iniciar
   useEffect(() => {
@@ -151,6 +157,42 @@ function App() {
     }
   };
 
+  const handleSaveSession = async (title: string) => {
+    if (!mode) return;
+    
+    setIsSaving(true);
+    try {
+      const { error } = await sessionService.saveSession(
+        title,
+        sessionData,
+        mode,
+        currentStep,
+        view
+      );
+
+      if (error) {
+        alert('Error al guardar la sesión. Por favor intenta de nuevo.');
+        console.error('Error al guardar:', error);
+      } else {
+        alert('Sesión guardada exitosamente en Supabase. Puedes verla en "Sesiones Guardadas".');
+        console.log('Sesión guardada exitosamente:', { title, mode, currentStep });
+      }
+    } catch (error) {
+      alert('Error al guardar la sesión. Por favor intenta de nuevo.');
+      console.error(error);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleLoadSession = (savedSession: SavedSession) => {
+    setSessionData(savedSession.session_data);
+    setMode(savedSession.mode);
+    setCurrentStep(savedSession.current_step);
+    setView(savedSession.view);
+    window.scrollTo(0, 0);
+  };
+
   const renderTherapistStep = () => {
     switch (currentStep) {
       case 1:
@@ -176,7 +218,7 @@ function App() {
                   onNext={(data) => handleNext(data)} 
                   onBack={handleBack} />;
       case 6:
-        return <Step6_Summary data={sessionData} onRestart={handleRestart} />;
+        return <Step6_Summary data={sessionData} onRestart={handleRestart} onSave={() => setShowSaveDialog(true)} />;
       default:
         return <Step0_Welcome onStart={handleStart} />;
     }
@@ -207,7 +249,7 @@ function App() {
                   onNext={(data) => handleNext(data)} 
                   onBack={handleBack} />;
       case 6:
-        return <Patient_Step6_Summary data={sessionData} onRestart={handleRestart} />;
+        return <Patient_Step6_Summary data={sessionData} onRestart={handleRestart} onSave={() => setShowSaveDialog(true)} />;
       default:
         return <Step0_Welcome onStart={handleStart} />;
     }
@@ -235,11 +277,29 @@ function App() {
   return (
     <div className="min-h-screen flex flex-col items-center py-3 sm:py-4 lg:py-6 px-3 sm:px-4 font-sans bg-gradient-to-br from-slate-50 via-slate-50/95 to-slate-100/95">
       <header className="w-full max-w-5xl mb-3 sm:mb-4 lg:mb-6">
-          {/* Botón Volver al Inicio */}
+          {/* Botones de navegación */}
           {currentStep > 0 && (
-            <div className="mb-3 flex justify-start">
+            <div className="mb-3 flex justify-between items-center">
               <Button onClick={handleGoHome} variant="secondary" className="text-xs py-2 px-3">
                 Volver al Inicio
+              </Button>
+              <Button 
+                onClick={() => setShowSessionsList(true)} 
+                variant="secondary" 
+                className="text-xs py-2 px-3"
+              >
+                Sesiones Guardadas
+              </Button>
+            </div>
+          )}
+          {currentStep === 0 && (
+            <div className="mb-3 flex justify-end">
+              <Button 
+                onClick={() => setShowSessionsList(true)} 
+                variant="secondary" 
+                className="text-xs py-2 px-3"
+              >
+                Sesiones Guardadas
               </Button>
             </div>
           )}
@@ -273,6 +333,19 @@ function App() {
         <p className="font-medium mb-1">Basado en la Terapia Breve Centrada en Soluciones de Steve de Shazer & Insoo Kim Berg.</p>
         <p className="text-xs">Esta es una herramienta de apoyo y no reemplaza el juicio clínico profesional.</p>
       </footer>
+
+      {/* Diálogos */}
+      <SaveSessionDialog
+        isOpen={showSaveDialog}
+        onClose={() => setShowSaveDialog(false)}
+        onSave={handleSaveSession}
+        isLoading={isSaving}
+      />
+      <SavedSessionsList
+        isOpen={showSessionsList}
+        onClose={() => setShowSessionsList(false)}
+        onLoadSession={handleLoadSession}
+      />
     </div>
   );
 }

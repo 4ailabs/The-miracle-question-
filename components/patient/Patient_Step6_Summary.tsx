@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import type { SessionData } from '../../types';
 import Card from '../common/Card';
 import Button from '../common/Button';
+import { FileText, FileJson, Copy, CheckCircle } from 'lucide-react';
 
 interface PatientStep6SummaryProps {
   data: SessionData;
   onRestart: () => void;
+  onSave?: () => void;
 }
 
 const SummaryItem: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
@@ -16,7 +18,7 @@ const SummaryItem: React.FC<{ title: string; children: React.ReactNode }> = ({ t
 );
 
 
-const Patient_Step6_Summary: React.FC<PatientStep6SummaryProps> = ({ data, onRestart }) => {
+const Patient_Step6_Summary: React.FC<PatientStep6SummaryProps> = ({ data, onRestart, onSave }) => {
   const [copyStatus, setCopyStatus] = useState('Copiar al Portapapeles');
 
   const generateSummaryText = () => {
@@ -88,9 +90,7 @@ MI PROGRESO Y PRÓXIMO PASO:
   return (
     <Card className="max-w-3xl mx-auto animate-fade-in">
       <div className="text-center mb-8">
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
+        <CheckCircle className="h-16 w-16 mx-auto text-green-500" />
         <h2 className="text-3xl font-bold text-slate-800 mt-4">Resumen</h2>
         <p className="text-slate-600 mt-2">¡Felicidades por completar este ejercicio! Aquí tienes un resumen de tus reflexiones. Guárdalo para recordarte tus fortalezas y tu camino a seguir.</p>
       </div>
@@ -120,16 +120,32 @@ MI PROGRESO Y PRÓXIMO PASO:
       </div>
 
       <div className="mt-8 space-y-4">
+        {onSave && (
+          <div className="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-400">
+            <h3 className="text-sm font-semibold text-blue-700 mb-3 text-center">Guardar Mi Reflexión</h3>
+            <p className="text-blue-600 text-sm text-center mb-3">
+              Guarda esta reflexión con un título para poder retomarla más tarde y dar seguimiento a tu progreso.
+            </p>
+            <div className="flex justify-center">
+              <Button onClick={onSave} className="px-6 py-2.5 text-sm">
+                Guardar Reflexión
+              </Button>
+            </div>
+          </div>
+        )}
         <div className="bg-slate-50 p-4 rounded-lg">
           <h3 className="text-sm font-semibold text-slate-700 mb-3 text-center">Exportar Mi Resumen</h3>
           <div className="flex flex-col sm:flex-row gap-2 justify-center">
-            <Button onClick={handleDownloadTxt} variant="secondary" className="px-4 py-2.5 text-sm w-full sm:w-auto">
-              📄 Descargar como TXT
+            <Button onClick={handleDownloadTxt} variant="secondary" className="px-4 py-2.5 text-sm w-full sm:w-auto flex items-center gap-2">
+              <FileText className="h-4 w-4" />
+              Descargar como TXT
             </Button>
-            <Button onClick={handleDownloadJson} variant="secondary" className="px-4 py-2.5 text-sm w-full sm:w-auto">
-              📋 Descargar como JSON
+            <Button onClick={handleDownloadJson} variant="secondary" className="px-4 py-2.5 text-sm w-full sm:w-auto flex items-center gap-2">
+              <FileJson className="h-4 w-4" />
+              Descargar como JSON
             </Button>
-            <Button onClick={handleCopy} className="px-4 py-2.5 text-sm w-full sm:w-auto">
+            <Button onClick={handleCopy} className="px-4 py-2.5 text-sm w-full sm:w-auto flex items-center gap-2">
+              <Copy className="h-4 w-4" />
               {copyStatus}
             </Button>
           </div>

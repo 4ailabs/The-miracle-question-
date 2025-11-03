@@ -10,6 +10,8 @@
     "vercel-build": "npm run build"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.78.0",
+    "lucide-react": "^0.552.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },
