@@ -20,7 +20,7 @@ const SaveSessionDialog: React.FC<SaveSessionDialogProps> = ({
 
   const handleSave = async () => {
     if (!title.trim()) {
-      setError('Por favor ingresa un título para la sesión');
+      setError('Por favor ingresa el nombre del tema a trabajar');
       return;
     }
 
@@ -47,12 +47,12 @@ const SaveSessionDialog: React.FC<SaveSessionDialogProps> = ({
       <Card className="max-w-md w-full">
         <h2 className="text-2xl font-bold text-slate-800 mb-4">Guardar Sesión</h2>
         <p className="text-slate-600 mb-4">
-          Asigna un título a esta sesión para poder retomarla más tarde.
+          Ingresa el nombre del tema a trabajar. La fecha y hora se guardarán automáticamente.
         </p>
         
         <div className="mb-4">
           <label htmlFor="session-title" className="block text-sm font-medium text-slate-700 mb-2">
-            Título de la sesión
+            Nombre del tema
           </label>
           <input
             id="session-title"
@@ -67,7 +67,7 @@ const SaveSessionDialog: React.FC<SaveSessionDialogProps> = ({
                 handleSave();
               }
             }}
-            placeholder="Ej: Sesión con Juan - 15/01/2024"
+            placeholder="Ej: Ansiedad laboral, Relación familiar, Autoestima..."
             className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             disabled={isLoading}
             autoFocus

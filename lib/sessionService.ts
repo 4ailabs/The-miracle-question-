@@ -4,7 +4,7 @@ import type { SessionData, SavedSession } from '../types';
 export const sessionService = {
   // Guardar una sesión
   async saveSession(
-    title: string,
+    topic: string, // Ahora recibe el tema en lugar del título completo
     sessionData: SessionData,
     mode: 'therapist' | 'patient',
     currentStep: number,
@@ -21,16 +21,29 @@ export const sessionService = {
         halfPointStepNotes: sessionData.halfPointStepNotes || '',
       };
 
+      // Generar título automático con fecha y hora
+      const now = new Date();
+      const formattedDate = now.toLocaleDateString('es-ES', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      });
+      const formattedTime = now.toLocaleTimeString('es-ES', {
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+      const fullTitle = `${topic.trim()} - ${formattedDate} ${formattedTime}`;
+
       const { data, error } = await supabase
         .from('sessions')
         .insert({
-          title,
+          title: fullTitle,
           session_data: cleanSessionData,
           mode,
           current_step: currentStep,
           view,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
+          created_at: now.toISOString(),
+          updated_at: now.toISOString(),
         })
         .select()
         .single();
